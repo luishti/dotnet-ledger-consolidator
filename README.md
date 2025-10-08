@@ -4,7 +4,7 @@ Este repositório apresenta uma solução completa para o desafio de arquitetura
 
 ## Visão geral
 
-O documento do desafio exige dois serviços principais: um para registrar os lançamentos de débito/crédito e outro para consolidar o saldo diário. Além disso, há requisitos não‑funcionais importantes, como garantir que o serviço de lançamentos continue disponível caso o de consolidação falhe e suportar picos de **50 requisições por segundo** com no máximo **5 % de perda**【926386920860220†L83-L87】. A proposta atende a esses requisitos através de uma arquitetura orientada a eventos (EDA) com comunicação assíncrona via **RabbitMQ**, persistência em **PostgreSQL**, cache em **Redis** e APIs construídas com **ASP.NET Core 8 Minimal APIs**.
+O documento do desafio exige dois serviços principais: um para registrar os lançamentos de débito/crédito e outro para consolidar o saldo diário. Além disso, há requisitos não‑funcionais importantes, como garantir que o serviço de lançamentos continue disponível caso o de consolidação falhe e suportar picos de **50 requisições por segundo** com no máximo **5 % de perda**. A proposta atende a esses requisitos através de uma arquitetura orientada a eventos (EDA) com comunicação assíncrona via **RabbitMQ**, persistência em **PostgreSQL**, cache em **Redis** e APIs construídas com **ASP.NET Core 8 Minimal APIs**.
 
 ### Componentes principais
 
@@ -14,13 +14,13 @@ O documento do desafio exige dois serviços principais: um para registrar os lan
 - **Gateway (opcional)** – um proxy reverso baseado em **YARP** que unifica as chamadas às APIs. Pode ser evoluído para uso de **Apigee** no futuro.
 - **Docker Compose** – orquestra todos os serviços e dependências (PostgreSQL, RabbitMQ, Redis, serviços .NET e gateway).
 - **Makefile** – oferece comandos simplificados para build, testes, subida e descida do ambiente.
-- **Scripts de testes** – inclui teste de carga `k6` para verificar que o consolidado suporta 50 req/s com perda ≤ 5 %, conforme o requisito【926386920860220†L83-L87】.
+- **Scripts de testes** – inclui teste de carga `k6` para verificar que o consolidado suporta 50 req/s com perda ≤ 5 %, conforme o requisito.
 
 ## Arquitetura
 
 ### Comunicação e Resiliência
 
-Os serviços se comunicam de forma assíncrona por meio do broker **RabbitMQ**. O **Ledger Service** grava os eventos em uma tabela **Outbox** junto com o lançamento. Um **worker** de publicação lê a tabela periodicamente e envia as mensagens para o broker. Caso o **Consolidator Service** fique fora do ar, os eventos permanecem na tabela até que ele esteja disponível, garantindo que o serviço de lançamentos continue funcionando, conforme o requisito de não interromper o fluxo de caixa quando o consolidado cair【926386920860220†L83-L87】.
+Os serviços se comunicam de forma assíncrona por meio do broker **RabbitMQ**. O **Ledger Service** grava os eventos em uma tabela **Outbox** junto com o lançamento. Um **worker** de publicação lê a tabela periodicamente e envia as mensagens para o broker. Caso o **Consolidator Service** fique fora do ar, os eventos permanecem na tabela até que ele esteja disponível, garantindo que o serviço de lançamentos continue funcionando, conforme o requisito de não interromper o fluxo de caixa quando o consolidado cair.
 
 No **Consolidator Service**, um consumidor de eventos (MassTransit) agrega os lançamentos por data e comerciante, calcula o saldo total e persiste em uma tabela `DailyBalances`. Para melhorar a performance de leitura, os saldos são armazenados em **Redis** com tempo de expiração configurável.
 
