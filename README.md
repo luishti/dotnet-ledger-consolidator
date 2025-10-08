@@ -74,49 +74,57 @@ No **Consolidator Service**, um consumidor de eventos (MassTransit) agrega os la
 ├── k6
 │   └── load_test.js
 └── src
-    ├── Shared.Messaging
-    │   ├── Shared.Messaging.csproj
-    │   └── Events
-    │       └── EntryRecorded.cs
-    ├── Ledger.Domain
-    │   ├── Ledger.Domain.csproj
-    │   └── Entities
-    │       ├── EntryType.cs
-    │       └── LedgerEntry.cs
-    ├── Ledger.Infrastructure
-    │   ├── Ledger.Infrastructure.csproj
-    │   ├── LedgerDbContext.cs
-    │   ├── OutboxMessage.cs
-    │   ├── Repositories
-    │   │   └── LedgerRepository.cs
-    │   └── Services
-    │       └── OutboxWorker.cs
-    ├── Ledger.Application
-    │   ├── Ledger.Application.csproj
-    │   └── Commands
-    │   │   ├── CreateEntryCommand.cs
-    │   │   └── CreateEntryCommandHandler.cs
-    │   └── Queries
-    │       ├── GetEntryByIdQuery.cs
-    │       └── GetEntryByIdQueryHandler.cs
-    ├── Ledger.Api
-    │   ├── Ledger.Api.csproj
-    │   ├── Program.cs
-    │   └── Dockerfile
-    ├── Consolidator.Api
-    │   ├── Consolidator.Api.csproj
-    │   ├── Program.cs
-    │   ├── ConsolidatorDbContext.cs
-    │   ├── Entities
-    │   │   └── DailyBalance.cs
-    │   ├── Consumers
-    │   │   └── EntryRecordedConsumer.cs
-    │   └── Dockerfile
-    └── Gateway.Yarp (opcional)
-        ├── Gateway.Yarp.csproj
-        ├── Program.cs
-        ├── appsettings.json
-        └── Dockerfile
+   ├── Shared.Messaging
+   │   ├── Shared.Messaging.csproj
+   │   └── Events
+   │       └── EntryRecorded.cs
+   ├── Ledger.Domain
+   │   ├── Ledger.Domain.csproj
+   │   └── Entities
+   │       ├── EntryType.cs
+   │       └── LedgerEntry.cs
+   ├── Ledger.Infrastructure
+   │   ├── Ledger.Infrastructure.csproj
+   │   ├── LedgerDbContext.cs
+   │   ├── OutboxMessage.cs
+   │   ├── Repositories
+   │   │   └── LedgerRepository.cs
+   │   └── Services
+   │       └── OutboxWorker.cs
+   ├── Ledger.Application
+   │   ├── Ledger.Application.csproj
+   │   └── Commands
+   │   │   ├── CreateEntryCommand.cs
+   │   │   └── CreateEntryCommandHandler.cs
+   │   └── Queries
+   │       ├── GetEntryByIdQuery.cs
+   │       └── GetEntryByIdQueryHandler.cs
+   ├── Ledger.Api
+   │   ├── Ledger.Api.csproj
+   │   ├── Program.cs
+   │   └── Dockerfile
+   ├── Ledger.Api.Tests
+   │   ├── Ledger.Api.Tests.csproj
+   │   ├── LedgerApiEndpointsTests.cs
+   │   └── GlobalUsings.cs
+   ├── Consolidator.Api
+   │   ├── Consolidator.Api.csproj
+   │   ├── Program.cs
+   │   ├── ConsolidatorDbContext.cs
+   │   ├── Entities
+   │   │   └── DailyBalance.cs
+   │   ├── Consumers
+   │   │   └── EntryRecordedConsumer.cs
+   │   └── Dockerfile
+   ├── Consolidator.Api.Tests
+   │   ├── Consolidator.Api.Tests.csproj
+   │   ├── ConsolidatorApiEndpointsTests.cs
+   │   └── GlobalUsings.cs
+   └── Gateway.Yarp (opcional)
+      ├── Gateway.Yarp.csproj
+      ├── Program.cs
+      ├── appsettings.json
+      └── Dockerfile
 ```
 
 ## Evoluções futuras
@@ -223,8 +231,41 @@ Os serviços estarão disponíveis nas seguintes portas:
 ### **5. Executar Testes Automatizados**
 Para rodar os testes unitários e de integração, execute:
 ```sh
-dotnet test
+ dotnet test
 ```
+
+### **6. Detalhes dos Testes Automatizados**
+
+O projeto inclui testes automatizados para garantir a qualidade e a confiabilidade dos serviços:
+
+- **Testes unitários e de integração**: localizados nas pastas `src/Ledger.Api.Tests` e `src/Consolidator.Api.Tests`. Eles cobrem os principais endpoints, regras de negócio e cenários de integração entre as camadas.
+  - Para executar todos os testes, utilize o comando acima (`dotnet test`).
+  - Os testes podem ser expandidos para incluir cenários de falha, consistência de dados e resiliência dos serviços.
+
+- **Testes de carga**: o script `k6/load_test.js` simula múltiplas requisições simultâneas para validar o requisito de suportar 50 req/s com até 5% de perda. Execute conforme instruções abaixo.
+
+#### Estrutura dos testes
+
+```
+src/
+├── Ledger.Api.Tests/           # Testes unitários e de integração do Ledger
+├── Consolidator.Api.Tests/     # Testes unitários e de integração do Consolidator
+k6/
+└── load_test.js                # Teste de carga com K6
+```
+
+#### Executando os testes
+
+1. **Testes automatizados (.NET):**
+   ```sh
+   dotnet test
+   ```
+2. **Testes de carga (K6):**
+   ```sh
+   k6 run k6/load_test.js
+   ```
+
+Os resultados dos testes são exibidos no terminal, indicando sucesso, falhas e métricas de desempenho.
 
 ### **6. Executar Testes de Carga**
 Os testes de carga estão localizados na pasta `k6/`. Para executá-los, utilize o comando:
