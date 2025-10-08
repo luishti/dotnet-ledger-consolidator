@@ -1,0 +1,61 @@
+## .NET build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# NuGet packages
+*.nupkg
+**/packages/*
+*.dotCover
+
+# Logs
+*.log
+
+# Docker
+**/Dockerfile*
+**/docker-compose*
+.docker/
+
+# K6 load test files
+k6/output/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Others
+*.swp
+*.tmp
+
+# Entity Framework Migrations
+**/Migrations/*Designer.cs
+**/Migrations/*Snapshot.cs
+
+# Ignore test results
+TestResults/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore Makefile artifacts
+*.d
+
+# Ignore Python cache (if any)
+__pycache__/
+
+# Ignore secrets
+secrets.env
+
+.vs/

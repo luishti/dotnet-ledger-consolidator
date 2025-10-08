@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Ledger.Domain/Ledger.Domain.csproj" />
+    <ProjectReference Include="../Shared.Messaging/Shared.Messaging.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Atualiza EF Core e provider Npgsql -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+		<PrivateAssets>all</PrivateAssets>
+	</PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+
+    <!-- MassTransit core e transporte RabbitMQ -->
+    <PackageReference Include="MassTransit" Version="8.2.0" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.0" />
+
+    <!-- Redis client -->
+    <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+
+    <!-- Swagger -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+
+    <!-- OpenTelemetry pacotes -->
+    <PackageReference Include="OpenTelemetry" Version="1.8.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1" />
+    <!-- Versão estável do Redis instrumentation (1.5.x) -->
+    <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.12.0-beta.2" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.8.1" />
+  </ItemGroup>
+</Project>
